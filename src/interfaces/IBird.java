@@ -4,7 +4,7 @@ import enums.FoodType;
 
 import java.util.List;
 
-public interface IBird {
+public interface IBird extends Comparable<IBird> {
     String getDefiningCharacteristic();
     String getBirdType();
     String getFoodDescription();
