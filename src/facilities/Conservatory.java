@@ -6,17 +6,21 @@ import interfaces.IBird;
 import java.util.*;
 
 public class Conservatory {
+    private static final int MAX_AVIARIES = 20;
     private final List<Aviary> aviaries;
     private HashMap<FoodType, Integer> foodReqs;
+    private HashMap<IBird, Aviary> birdLocations;
 
-    public void rescueBird(IBird bird) {
+    public boolean rescueBird(IBird bird) {
         // Seems like there should be some form of intake, but since
         // that's not specified, just see if we can fit the bird in
         // an aviary.
         if (assignBird(bird)) {
             System.out.println("Bird rescued");
+            return true;
         } else {
             System.out.println("Conservatory has no space to rescue bird");
+            return false;
         }
     }
     /* We're just going to go through all the aviaries and
@@ -28,18 +32,23 @@ public class Conservatory {
         for (Aviary aviary : aviaries) {
             if (aviary.assignBird(bird)) {
                 updateFoodReqs(bird);
+                birdLocations.put(bird, aviary);
                 return true;
             }
             // We didn't find an aviary this iteration
         }
         // We didn't find an aviary at all
-        if (aviaries.size() < 20) {
+        // maybe we can create a new one
+        if (aviaries.size() < MAX_AVIARIES) {
             // create new aviary here and assign bird
             String location = String.format("AVIARY LOCATION %d", aviaries.size());
             Aviary new_aviary = new Aviary(aviaries.size(), location);
             aviaries.add(new_aviary);
             new_aviary.assignBird(bird);
+            birdLocations.put(bird, new_aviary);
+            return true;
         }
+        // nope, sorry
         return false;
     }
 
@@ -80,7 +89,6 @@ public class Conservatory {
         List<IBird> birds = new ArrayList<>();
         for (Aviary aviary : aviaries) {
             birds.addAll(aviary.getBirds());
-
         }
         Collections.sort(birds);
         return birds.toString();
@@ -88,6 +96,7 @@ public class Conservatory {
 
     public Conservatory() {
         aviaries = new ArrayList<>();
+        birdLocations = new HashMap<IBird, Aviary>();
     }
 
     /** Really struggled with how best to keep track of food until

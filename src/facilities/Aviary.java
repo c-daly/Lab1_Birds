@@ -11,6 +11,7 @@ public class Aviary {
     private List<IBird> birds;
 
     public Aviary(int ID, String location) {
+        birds = new ArrayList<IBird>();
         this.ID = ID;
         this.location = location;
     }
